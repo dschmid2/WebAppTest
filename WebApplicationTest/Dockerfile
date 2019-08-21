@@ -1,20 +1,18 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:2.1-stretch-slim AS base
+ 
+# First stage of multi-stage build
+FROM microsoft/aspnetcore-build AS build-env
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:2.1-stretch AS build
-WORKDIR /src
-COPY ["WebApplicationTest/WebApplicationTest.csproj", "WebApplicationTest/"]
-RUN dotnet restore "WebApplicationTest/WebApplicationTest.csproj"
-COPY . .
-WORKDIR "/src/WebApplicationTest"
-RUN dotnet build "WebApplicationTest.csproj" -c Release -o /app
+# copy the contents of agent working directory on host to workdir in container
+COPY . ./
 
-FROM build AS publish
-RUN dotnet publish "WebApplicationTest.csproj" -c Release -o /app
+# dotnet commands to build, test, and publish
+RUN dotnet restore
+RUN dotnet build -c Release
+RUN dotnet publish -c Release -o out
 
-FROM base AS final
+# Second stage - Build runtime image
+FROM microsoft/aspnetcore
 WORKDIR /app
-COPY --from=publish /app .
+COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "WebApplicationTest.dll"]
