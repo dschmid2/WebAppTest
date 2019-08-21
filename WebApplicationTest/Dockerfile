@@ -1,18 +1,14 @@
- 
-# First stage of multi-stage build
-FROM microsoft/aspnetcore-build AS build-env
+FROM microsoft/dotnet:sdk AS build
 WORKDIR /app
 
-# copy the contents of agent working directory on host to workdir in container
-COPY . ./
-
-# dotnet commands to build, test, and publish
+COPY *.csproj ./
 RUN dotnet restore
-RUN dotnet build -c Release
-RUN dotnet publish -c Release -o out
 
-# Second stage - Build runtime image
-FROM microsoft/aspnetcore
+COPY . ./
+RUN dotnet publish -c Release -o publishdir
+
+FROM microsoft/dotnet:aspnetcore-runtime AS runtime
+EXPOSE 5555
 WORKDIR /app
-COPY --from=build-env /app/out .
+COPY --from=build /app/publishdir .
 ENTRYPOINT ["dotnet", "WebApplicationTest.dll"]
