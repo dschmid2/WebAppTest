@@ -27,6 +27,9 @@ namespace WebApplicationTest
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            IServiceProvider serviceProvider = services.BuildServiceProvider();
+            IHostingEnvironment env = serviceProvider.GetService<IHostingEnvironment>();
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -34,9 +37,19 @@ namespace WebApplicationTest
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+            if (env.IsDevelopment())
+            {
+                services.AddDbContext<ApplicationDbContext>(
+                        options => options.UseSqlite(
+                            Configuration.GetConnectionString("DefaultConnection")));
+            }
+            else
+            { 
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(
+                        Configuration.GetConnectionString("DefaultConnection")));
+            }
+
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
