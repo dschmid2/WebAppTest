@@ -8,7 +8,7 @@ COPY . ./
 RUN dotnet publish -c Release -o publishdir
 
 FROM microsoft/dotnet:aspnetcore-runtime AS runtime
-EXPOSE 5555
+EXPOSE 80
 WORKDIR /app
 COPY --from=build /app/publishdir .
 ENTRYPOINT ["dotnet", "WebApplicationTest.dll"]
