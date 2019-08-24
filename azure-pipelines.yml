@@ -29,8 +29,8 @@ stages:
         Dockerfile: '**/Dockerfile'
         tags: 
 
-- task: SSH@0
-  inputs:
-    sshEndpoint: 'srvdevlife_ssh'
-    runOptions: 'commands'
-    commands: 'sudo docker images'
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'srvdevlife_ssh'
+        runOptions: 'commands'
+        commands: 'sudo docker images'
