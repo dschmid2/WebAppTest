@@ -33,4 +33,6 @@ stages:
       inputs:
         sshEndpoint: 'srvdevlife_ssh'
         runOptions: 'commands'
-        commands: 'sudo /usr/local/bin/docker images'
+        commands: |
+          sudo /usr/local/bin/docker pull ddschmid/webapptest
+          sudo /usr/local/bin/docker restart ddschmid-webapptest
