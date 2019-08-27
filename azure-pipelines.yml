@@ -27,3 +27,12 @@ stages:
         repository: 'ddschmid/webapptest'
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
+        tags: 
+
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'srvdevlife_ssh'
+        runOptions: 'commands'
+        commands: |
+          sudo /usr/local/bin/docker pull ddschmid/webapptest
+          sudo /usr/local/bin/docker restart ddschmid-webapptest
