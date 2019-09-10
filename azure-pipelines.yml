@@ -27,4 +27,3 @@ stages:
         repository: 'ddschmid/webapptest'
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
-        tags: 
