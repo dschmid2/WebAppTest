@@ -37,16 +37,23 @@ namespace WebApplicationTest
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            if (env.IsDevelopment())
+            string dbengine = Configuration.GetValue<string>("DBEngine", "MSSQL");
+            if (dbengine == "SQLITE")
             {
                 services.AddDbContext<ApplicationDbContext>(
                         options => options.UseSqlite(
                             Configuration.GetConnectionString("DefaultConnection")));
             }
-            else
-            { 
+            else if (dbengine == "MSSQL")
+            {
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
+                        Configuration.GetConnectionString("DefaultConnection")));
+            }
+            else if (dbengine == "MYSQL")
+            {
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseMySQL(
                         Configuration.GetConnectionString("DefaultConnection")));
             }
 
