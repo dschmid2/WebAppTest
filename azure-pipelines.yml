@@ -28,13 +28,3 @@ stages:
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
         tags: 
-
-    - task: SSH@0
-      inputs:
-        sshEndpoint: 'srvdevlife_ssh'
-        runOptions: 'commands'
-        commands: |
-          sudo /usr/local/bin/docker pull ddschmid/webapptest:latest
-          sudo /usr/local/bin/docker stop ddschmid-webapptest
-          sudo /usr/local/bin/docker rm ddschmid-webapptest
-          sudo /usr/local/bin/docker run --name ddschmid-webapptest -d -p 32780:80 -e "ASPNETCORE_ENVIRONMENT=Staging" ddschmid/webapptest:latest
