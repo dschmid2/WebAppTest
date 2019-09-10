@@ -27,3 +27,9 @@ stages:
         repository: 'ddschmid/webapptest'
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
